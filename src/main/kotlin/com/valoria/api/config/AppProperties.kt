@@ -6,6 +6,7 @@ import java.nio.file.Path
 @ConfigurationProperties("app")
 data class AppProperties(
     val frontendOrigin: String,
+    val requireHttps: Boolean = false,
     val jwt: Jwt,
     val registration: Registration = Registration(),
     val backup: Backup = Backup(),
@@ -29,4 +30,3 @@ data class AppProperties(
         val maxUploadBytes: Long = 2_147_483_648,
     )
 }
-

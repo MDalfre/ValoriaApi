@@ -5,11 +5,14 @@ API Kotlin/Spring Boot para o site do servidor Valoria. Ela lê rankings e conta
 ## Segurança
 
 - Todas as rotas `/api/**`, exceto o bootstrap `/api/auth/guest`, exigem JWT.
+- Em produção, `REQUIRE_HTTPS=true` rejeita login e cadastro que não chegarem por TLS.
 - O token anônimo de curta duração permite proteger também rankings, avisos, taxas e downloads.
 - Login e cadastro nunca aceitam papel administrativo ou dias VIP enviados pelo navegador.
 - Contas `GameMaster` e personagens com status GM não aparecem nos rankings.
 - Segredos são lidos exclusivamente por variáveis de ambiente. Arquivos `.env`, chaves e certificados estão ignorados pelo Git.
 - Restauração é desabilitada por padrão, exige papel `ADMIN`, frase `RESTORE <arquivo>` e gera auditoria.
+
+A senha aparece no payload local do navegador porque o servidor precisa verificá-la contra BCrypt. Não aplique hash simples no frontend: esse hash se tornaria uma credencial reutilizável. HTTPS cifra integralmente headers e corpo durante o transporte. Para produção, publique o Nginx atrás de Caddy, Traefik ou outro proxy TLS e habilite `REQUIRE_HTTPS=true`.
 
 ## Integração OpenMU
 

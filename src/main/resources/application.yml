@@ -32,6 +32,7 @@ management:
         enabled: true
 app:
   frontend-origin: ${FRONTEND_ORIGIN}
+  require-https: ${REQUIRE_HTTPS:false}
   jwt:
     secret-base64: ${JWT_SECRET_BASE64}
     issuer: ${JWT_ISSUER:valoria-api}
@@ -45,4 +46,3 @@ app:
     restore-enabled: ${BACKUP_RESTORE_ENABLED:false}
     pg-restore-path: ${PG_RESTORE_PATH:pg_restore}
     max-upload-bytes: ${BACKUP_MAX_UPLOAD_BYTES:2147483648}
-

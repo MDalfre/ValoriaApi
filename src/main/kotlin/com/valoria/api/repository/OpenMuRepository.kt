@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
 import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.util.UUID
 
 @Repository
@@ -33,7 +35,7 @@ class OpenMuRepository(
     @Transactional
     fun createAccount(request: RegisterRequest, trialDays: Int, trialLevel: Int): UUID {
         val accountId = UUID.randomUUID()
-        val now = Instant.now()
+        val now = OffsetDateTime.now(ZoneOffset.UTC)
         val params = MapSqlParameterSource()
             .addValue("id", accountId)
             .addValue("loginName", request.loginName)
@@ -66,7 +68,7 @@ class OpenMuRepository(
                     "accountId" to accountId,
                     "level" to trialLevel,
                     "startsAt" to now,
-                    "expiresAt" to now.plusSeconds(trialDays.toLong() * 86_400),
+                    "expiresAt" to now.plusDays(trialDays.toLong()),
                     "sourceReference" to "website-account-creation",
                     "createdAt" to now,
                 ),

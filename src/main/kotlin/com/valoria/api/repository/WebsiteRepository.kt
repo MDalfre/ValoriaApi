@@ -4,6 +4,8 @@ import com.valoria.api.dto.*
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.util.UUID
 
 @Repository
@@ -32,7 +34,7 @@ class WebsiteRepository(private val jdbc: NamedParameterJdbcTemplate) {
                 "id" to notice.id,
                 "title" to notice.title,
                 "body" to notice.body,
-                "publishedAt" to notice.publishedAt,
+                "publishedAt" to OffsetDateTime.ofInstant(notice.publishedAt, ZoneOffset.UTC),
                 "createdBy" to actorId,
             ),
         )
@@ -80,9 +82,8 @@ class WebsiteRepository(private val jdbc: NamedParameterJdbcTemplate) {
                 "target" to target,
                 "details" to details,
                 "remote" to remoteAddress,
-                "createdAt" to Instant.now(),
+                "createdAt" to OffsetDateTime.now(ZoneOffset.UTC),
             ),
         )
     }
 }
-
