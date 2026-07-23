@@ -4,6 +4,8 @@ import com.valoria.api.config.AppProperties
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm
+import org.springframework.security.oauth2.jwt.JwsHeader
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -32,7 +34,8 @@ class JwtService(
             .claim(ROLES_CLAIM, roles)
             .apply { loginName?.let { claim("login", it) } }
             .build()
-        return TokenResponse(encoder.encode(JwtEncoderParameters.from(claims)).tokenValue, expiresAt)
+        val header = JwsHeader.with(MacAlgorithm.HS256).build()
+        return TokenResponse(encoder.encode(JwtEncoderParameters.from(header, claims)).tokenValue, expiresAt)
     }
 
     companion object {
@@ -45,4 +48,3 @@ data class TokenResponse(
     val expiresAt: Instant,
     val tokenType: String = "Bearer",
 )
-
