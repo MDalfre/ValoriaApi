@@ -19,7 +19,7 @@ INSERT INTO website.client_download (
 VALUES (
     '30000000-0000-0000-0000-000000000001',
     'Client completo Valoria',
-    '/downloads/ValoriaClient-0.1.0.zip',
+    'https://github.com/MDalfre/ValoriaDocker/releases/download/client-v0.1.0/ValoriaClient-0.1.0.zip',
     '0.1.0',
     '445 MB',
     '846bfd2b38822ec02e87d3a0806141bed415c71d6e19f45d30cd39c7ad771ea8',
