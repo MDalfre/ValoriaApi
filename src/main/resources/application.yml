@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: valoria-api
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT:5432}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+  flyway:
+    enabled: true
+    schemas: website
+    default-schema: website
+    create-schemas: true
+  servlet:
+    multipart:
+      max-file-size: 2GB
+      max-request-size: 2GB
+server:
+  port: ${SERVER_PORT:8090}
+  forward-headers-strategy: framework
+  error:
+    include-message: never
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+app:
+  frontend-origin: ${FRONTEND_ORIGIN}
+  jwt:
+    secret-base64: ${JWT_SECRET_BASE64}
+    issuer: ${JWT_ISSUER:valoria-api}
+    access-minutes: ${JWT_ACCESS_MINUTES:30}
+  registration:
+    trial-vip-days: ${TRIAL_VIP_DAYS:15}
+    trial-vip-level: ${TRIAL_VIP_LEVEL:1}
+  backup:
+    directory: ${BACKUP_DIRECTORY:/backups}
+    staging-directory: ${BACKUP_STAGING_DIRECTORY:/restore-staging}
+    restore-enabled: ${BACKUP_RESTORE_ENABLED:false}
+    pg-restore-path: ${PG_RESTORE_PATH:pg_restore}
+    max-upload-bytes: ${BACKUP_MAX_UPLOAD_BYTES:2147483648}
+

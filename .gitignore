@@ -1,0 +1,14 @@
+.gradle/
+.gradle-home/
+build/
+out/
+.idea/
+*.iml
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+uploads/
+

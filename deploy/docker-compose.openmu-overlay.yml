@@ -1,0 +1,45 @@
+services:
+  valoria-api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: valoria-api:local
+    container_name: valoria-api
+    restart: unless-stopped
+    networks:
+      - openmu-network
+    env_file:
+      - ${VALORIA_ENV_FILE}
+    volumes:
+      - ${OPENMU_BACKUP_DIR}:/backups
+      - valoria-restore-staging:/restore-staging
+    expose:
+      - "8090"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8090/actuator/health/readiness"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  valoria-web:
+    build:
+      context: ../../ValoriaWeb
+      dockerfile: Dockerfile
+    image: valoria-web:local
+    container_name: valoria-web
+    restart: unless-stopped
+    depends_on:
+      valoria-api:
+        condition: service_healthy
+    networks:
+      - openmu-network
+    ports:
+      - "${VALORIA_HTTP_PORT:-8081}:80"
+
+networks:
+  openmu-network:
+    external: true
+    name: openmu-network
+
+volumes:
+  valoria-restore-staging:

@@ -1,0 +1,10 @@
+.git
+.gradle
+.gradle-home
+build
+.idea
+.env
+.env.*
+secrets
+README.md
+
