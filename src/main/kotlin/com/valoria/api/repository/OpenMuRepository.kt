@@ -69,7 +69,7 @@ class OpenMuRepository(
                     "level" to trialLevel,
                     "startsAt" to now,
                     "expiresAt" to now.plusDays(trialDays.toLong()),
-                    "sourceReference" to "website-account-creation",
+                    "sourceReference" to "website-account-creation:$accountId",
                     "createdAt" to now,
                 ),
             )

@@ -1,6 +1,8 @@
 package com.valoria.api.dto
 
 import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
@@ -31,6 +33,46 @@ data class VipSummary(
     val active: Boolean,
     val level: Int,
     val expiresAt: Instant?,
+)
+
+data class AdminVipStatus(
+    val active: Boolean,
+    val level: Int,
+    val expiresAt: Instant?,
+    val source: String?,
+    val legacy: Boolean,
+)
+
+data class AdminVipAccount(
+    val id: UUID,
+    val loginName: String,
+    val email: String,
+    val state: Int,
+    val registrationDate: Instant,
+    val vip: AdminVipStatus,
+)
+
+data class VipEntitlementDto(
+    val id: UUID,
+    val vipLevel: Int,
+    val startsAt: Instant,
+    val expiresAt: Instant?,
+    val source: String,
+    val sourceReference: String?,
+    val revokedAt: Instant?,
+    val createdAt: Instant,
+    val active: Boolean,
+)
+
+data class AdminVipAccountDetails(
+    val account: AdminVipAccount,
+    val entitlements: List<VipEntitlementDto>,
+)
+
+data class GrantVipRequest(
+    @field:Min(1) @field:Max(100) val vipLevel: Int,
+    @field:Min(1) @field:Max(3650) val days: Int?,
+    @field:Size(max = 200) val sourceReference: String?,
 )
 
 data class CharacterSummary(
@@ -109,4 +151,3 @@ data class RestoreResult(
     val accepted: Boolean,
     val message: String,
 )
-
