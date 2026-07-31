@@ -55,7 +55,7 @@ class SecurityConfig {
             .cors(withDefaults())
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers("/actuator/health/**", "/api/auth/guest").permitAll()
+                it.requestMatchers("/actuator/health/**", "/api/auth/guest", "/api/public/valoria-throne/status").permitAll()
                 it.anyRequest().authenticated()
             }
             .oauth2ResourceServer {

@@ -32,7 +32,7 @@ Desvantagens:
 
 ## Segunda opção: AWS
 
-Para manter Docker Compose com pouca mudança, Amazon Lightsail é mais simples que montar ECS/RDS no início. O plano Linux de 4 GB aparece a US$ 24/mês e o de 2 GB a US$ 12/mês na [tabela oficial de bundles](https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-bundles.html). O serviço também oferece opções separadas de containers, banco e storage na [página de preços](https://aws.amazon.com/lightsail/pricing/).
+Para manter Docker Compose com pouca mudança, Amazon Lightsail é mais simples que montar ECS/RDS no início. O plano Linux de 4 GB aparece a US\$ 24/mês e o de 2 GB a US\$ 12/mês na [tabela oficial de bundles](https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-bundles.html). O serviço também oferece opções separadas de containers, banco e storage na [página de preços](https://aws.amazon.com/lightsail/pricing/).
 
 Vantagens:
 
