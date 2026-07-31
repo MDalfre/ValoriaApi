@@ -1,6 +1,5 @@
 package com.valoria.api.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Instant
@@ -8,7 +7,7 @@ import java.util.UUID
 
 class ValoriaThroneStatusServiceTest {
     private val now = Instant.parse("2026-07-31T18:00:00Z")
-    private val service = ValoriaThroneStatusService(ObjectMapper())
+    private val service = ValoriaThroneStatusService()
 
     @Test fun `returns the newest active reign and configured era benefit`() {
         val status = service.fromConfigurations(listOf(config("Luck", now.minusSeconds(60)), config("Ascension", now.minusSeconds(120))), now)
