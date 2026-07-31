@@ -110,6 +110,22 @@ data class ServerRate(
     val pvpEnabled: Boolean,
 )
 
+data class ValoriaThroneStatus(
+    val hasActiveReign: Boolean,
+    val emperor: ValoriaThroneEmperor?,
+    val guild: ValoriaThroneGuild?,
+    val era: ValoriaThroneEra?,
+    val startedAt: Instant?,
+    val expiresAt: Instant?,
+    val remainingSeconds: Long?,
+)
+
+data class ValoriaThroneEmperor(val characterId: UUID, val name: String)
+
+data class ValoriaThroneGuild(val id: Long, val name: String, val emblem: String? = null)
+
+data class ValoriaThroneEra(val code: String, val name: String, val description: String)
+
 data class NoticeDto(
     val id: UUID,
     val title: String,

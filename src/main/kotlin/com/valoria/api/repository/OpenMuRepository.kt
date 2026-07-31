@@ -12,12 +12,17 @@ import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.UUID
+import com.valoria.api.service.ValoriaThroneStatusService
+import java.util.concurrent.atomic.AtomicReference
 
 @Repository
 class OpenMuRepository(
     private val jdbc: NamedParameterJdbcTemplate,
     private val passwordEncoder: PasswordEncoder,
+    private val valoriaThroneStatusService: ValoriaThroneStatusService,
 ) {
+    private val valoriaThroneStatusCache = AtomicReference<CachedValoriaThroneStatus?>(null)
+
     fun findAccountForLogin(loginName: String): LoginAccount? =
         jdbc.query(
             """SELECT "Id", "LoginName", "PasswordHash", "State" FROM data."Account"
@@ -147,6 +152,40 @@ class OpenMuRepository(
             )
         }
 
+    fun valoriaThroneStatus(): ValoriaThroneStatus {
+        val now = Instant.now()
+        val cached = valoriaThroneStatusCache.get()
+        if (cached != null && cached.expiresAt.isAfter(now)) return cached.status
+
+        synchronized(valoriaThroneStatusCache) {
+            val current = valoriaThroneStatusCache.get()
+            if (current != null && current.expiresAt.isAfter(now)) return current.status
+            val status = loadValoriaThroneStatus(now)
+            valoriaThroneStatusCache.set(CachedValoriaThroneStatus(status, now.plusSeconds(30)))
+            return status
+        }
+    }
+
+    private fun loadValoriaThroneStatus(now: Instant): ValoriaThroneStatus {
+        val configurations = jdbc.query(
+            """SELECT "CustomConfiguration"
+               FROM config."PlugInConfiguration"
+               WHERE "TypeId" = CAST(:typeId AS uuid)""",
+            mapOf("typeId" to VALORIA_THRONE_PLUGIN_TYPE_ID),
+        ) { result, _ -> result.getString("CustomConfiguration") }
+        val status = valoriaThroneStatusService.fromConfigurations(configurations, now)
+        val guild = status.guild ?: return status
+        val logo = jdbc.query(
+            """SELECT "Logo"
+               FROM guild."Guild"
+               WHERE lower("Name") = lower(:name)
+               ORDER BY "Id"
+               LIMIT 1""",
+            mapOf("name" to guild.name),
+        ) { result, _ -> result.getBytes("Logo") }.singleOrNull()
+        return status.copy(guild = guild.copy(emblem = valoriaThroneStatusService.guildEmblem(logo)))
+    }
+
     private fun ranking(order: String, limit: Int): List<PlayerRankingEntry> =
         jdbc.query(
             """$characterQuery
@@ -180,6 +219,8 @@ class OpenMuRepository(
     )
 
     companion object {
+        // MUnique.OpenMU.PlugIns.ValoriaThrone.ValoriaThronePlugIn [Guid].
+        private const val VALORIA_THRONE_PLUGIN_TYPE_ID = "d066fcd8-6b7e-4a6e-8d77-f7bfb4096c1e"
         private const val levelOrder = """resets DESC, level DESC, c."Experience" DESC, c."Name" """
         private const val characterQuery =
             """SELECT c."Id", c."Name", cc."Name" AS class_name, c."PlayerKillCount", c."State",
@@ -196,6 +237,8 @@ class OpenMuRepository(
                ) stats ON true
             """
     }
+
+    private data class CachedValoriaThroneStatus(val status: ValoriaThroneStatus, val expiresAt: Instant)
 }
 
 data class LoginAccount(

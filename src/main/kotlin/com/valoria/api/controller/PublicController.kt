@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.CacheControl
+import org.springframework.http.ResponseEntity
+import java.util.concurrent.TimeUnit
 
 @RestController
 @RequestMapping("/api/public")
@@ -29,6 +32,12 @@ class PublicController(
     @GetMapping("/server-rates")
     fun rates(): List<ServerRate> = openMu.serverRates()
 
+    @GetMapping("/valoria-throne/status")
+    fun valoriaThroneStatus(): ResponseEntity<ValoriaThroneStatus> =
+        ResponseEntity.ok()
+            .cacheControl(CacheControl.maxAge(30, TimeUnit.SECONDS).cachePublic())
+            .body(openMu.valoriaThroneStatus())
+
     @GetMapping("/notices")
     fun notices(@RequestParam(defaultValue = "6") limit: Int): List<NoticeDto> =
         website.notices(limit.coerceIn(1, 30))
@@ -39,4 +48,3 @@ class PublicController(
     @GetMapping("/downloads")
     fun downloads(): List<ClientDownloadDto> = website.downloads()
 }
-
