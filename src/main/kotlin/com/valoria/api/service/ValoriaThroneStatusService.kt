@@ -1,7 +1,7 @@
 package com.valoria.api.service
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.valoria.api.dto.ValoriaThroneEmperor
 import com.valoria.api.dto.ValoriaThroneEra
 import com.valoria.api.dto.ValoriaThroneGuild
@@ -14,9 +14,8 @@ import java.util.Base64
 
 /** Maps the persisted OpenMU plug-in configuration into the deliberately small public contract. */
 @Service
-class ValoriaThroneStatusService(
-    private val objectMapper: ObjectMapper,
-) {
+class ValoriaThroneStatusService {
+    private val objectMapper = JsonMapper.builder().build()
     fun fromConfigurations(configurations: List<String?>, now: Instant = Instant.now()): ValoriaThroneStatus {
         val reign = configurations.mapNotNull(::readReign).maxWithOrNull(compareBy<Reign> { it.startedAt }.thenBy { it.id })
             ?: return inactive()
